@@ -1,1 +1,0 @@
-# Proyecto_Ionic2
