@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Noticias
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Categorias:</ion-label>
+      <ion-select [(ngModel)]="cat" (ionChange)="filtroNoticias()" placeholder="Seleccione una categoria">
+        <ion-option value="-1">Todas</ion-option>
+        <ion-option *ngFor="let cat of categorias" value="{{cat.id}}">{{cat.name}}</ion-option>
+      </ion-select>
+    </ion-list-header>
+    <button ion-item [navPush]="noticiaPage"
+                     [navParams]=noticia 
+                     *ngFor="let noticia of noticias">
+
+      <ion-thumbnail item-left>
+        <img src="{{aux}}" />
+      </ion-thumbnail>
+      <h2>{{ noticia.name }}</h2>
+      <p>Autor: {{ noticia.user }}</p>
+      <p>Fecha: {{ noticia.fecha.date }}</p>
+    </button>
+  </ion-list>
+</ion-content>

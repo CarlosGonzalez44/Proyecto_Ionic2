@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{sala.nombre}}<ion-icon (click)="mostrarParticipantes()" name="people"></ion-icon></ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="cards-bg social-cards">
+
+<ion-card *ngFor="let mensaje of mensajes">
+
+  <ion-item>
+    <ion-avatar item-left>
+      <img src="{{rutaFoto}}">
+    </ion-avatar>
+    <h2>{{mensaje.autor}}</h2>
+    <p>{{mensaje.fecha}}</p>
+  </ion-item>
+
+  <ion-card-content>
+    <p>{{mensaje.contenido}}</p>
+  </ion-card-content>
+
+</ion-card>
+
+</ion-content>
+
+<ion-footer>
+    <input ion-input type="text"  placeholder="Message..." />
+    <button ion-button>Send</button>
+</ion-footer>

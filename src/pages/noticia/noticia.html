@@ -1,0 +1,33 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{noticia.name}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-row>
+    <ion-col></ion-col>
+    <ion-col><img src="{{aux}}" /></ion-col>
+    <ion-col></ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <h2>Autor: </h2>{{noticia.user}}
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <h2>Fecha: </h2>{{noticia.fecha.date}}
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <h2>Contenido: </h2>
+      <p>{{noticia.description}}</p>
+    </ion-col>
+  </ion-row>
+</ion-content>

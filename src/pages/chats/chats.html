@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Sala de chats
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-list-header>Salas de chat</ion-list-header>
+
+    <button ion-item [navPush]="salaPage"
+                     [navParams]=chat
+                     *ngFor="let chat of chats">
+      <ion-avatar item-left>
+        <img src="{{chat.rutaFoto}}" />
+      </ion-avatar>
+      <h2>{{ chat.nombre }}</h2>
+      <p>Creador: {{ chat.autor }}</p>
+    </button>
+
+  </ion-list>
+</ion-content>

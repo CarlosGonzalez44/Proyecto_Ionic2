@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Red social IES Virgen del Carmen</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h2>Bienvenido, introduza usuario y contraseña para acceder</h2>
+  <form #formulario="ngForm">
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label floating> Usuario:</ion-label>
+          <ion-input type="text" required name="username" ngModel></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label floating> Contraseña:</ion-label>
+          <ion-input type="password" required name="password" ngModel></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block (click)="login(formulario)">INICIAR SESIÓN</button>
+      </ion-col>
+    </ion-row>            
+  </form>
+</ion-content>
