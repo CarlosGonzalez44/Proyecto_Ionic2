@@ -1,4 +1,6 @@
+import { ApiService } from '../services/api.service';
 import { LoginService } from '../services/login.service';
+
 import { LoginPage } from '../pages/login/login';
 
 import { HttpModule, JsonpModule } from '@angular/http';
@@ -53,6 +55,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     StatusBar,
     SplashScreen,
     LoginService,
+    ApiService,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

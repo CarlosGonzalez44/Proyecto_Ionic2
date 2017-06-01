@@ -1,3 +1,4 @@
+import { ApiService } from './../../services/api.service';
 import { LoginPage } from './../login/login';
 import { LoginService } from './../../services/login.service';
 import { NoticiaPage } from './../noticia/noticia';
@@ -17,43 +18,46 @@ export class NoticiasPage {
   private headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
   aux = '../../assets/imagenes/1.jpg';
   cat;
-  noticias;
+  public noticias;
   categorias;
 
-  constructor(public navCtrl: NavController,private _http: Http,public navParams: NavParams,public logServ:LoginService,public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController,public _http: Http,public navParams: NavParams,public logServ:LoginService,public alertCtrl: AlertController, public api:ApiService) {
      //this.noticias = JSON.parse(localStorage.getItem('noticias'));
   }
+  setNoticias(n){
+     this.noticias = n;
 
+  }
   ngOnInit(){
       var token = this.logServ.getToken();
       if(token!=null){
-          this._http.get(this.url+"/noticiasapp/"+token ,{headers : this.headers}).subscribe(
-             response => 
-                    { 
-                        if(response.json().status)
-                        {
-                            let alert = this.alertCtrl.create({
-                                title: 'Error '+response.json().status,
+         this.api.getNewsAndCategorys().subscribe(
+            
+                response => {
+                    if(response.json().status)
+                    {
+                        let alert = this.alertCtrl.create({
+                                title: response.json().status,
                                 message: response.json().data,
                                 buttons: ['Volver']
-                            });
-                            alert.present();
-                            this.navCtrl.setRoot(LoginPage);
-                        }
-                        else
-                        {
-                            this.noticias = response.json()[0];
-                            this.categorias = response.json()[1];
-                        }
-                    },
-             error => {
-                 let alert = this.alertCtrl.create({
-                      title: 'Error al hacer la peticion al servidor',
-                      message: error,
-                      buttons: ['Volver']
-                 });
-                 alert.present();
-             }
+                        });
+                        alert.present();
+                        this.navCtrl.setRoot(LoginPage);
+                    }
+                    else
+                    {
+                        this.noticias = response.json()[0];
+                        this.categorias = response.json()[1];
+                    }
+                },
+                error => {
+                    let alert = this.alertCtrl.create({
+                        title: '500',
+                        message: error,
+                        buttons: ['Volver']
+                    });
+                    alert.present();
+                }
           );
       }
       else
@@ -66,13 +70,13 @@ export class NoticiasPage {
           alert.present();
           this.navCtrl.setRoot(LoginPage);
       }
-
+      
   }
 
   filtroNoticias(){
       var token = this.logServ.getToken();
       if(token!=null){
-          this._http.get(this.url+"/noticiasapp/"+token ,{headers : this.headers}).subscribe(
+          this.api.getNewsAndCategorys().subscribe(
              response => 
                     { 
                         if(response.json().status)
@@ -105,7 +109,7 @@ export class NoticiasPage {
                     },
              error => {
                  let alert = this.alertCtrl.create({
-                      title: 'Error al hacer la peticion al servidor',
+                      title: '500',
                       message: error,
                       buttons: ['Volver']
                  });
@@ -129,7 +133,7 @@ export class NoticiasPage {
 
     var token = this.logServ.getToken();
       if(token!=null){
-          this._http.get(this.url+"/noticiasapp/"+token ,{headers : this.headers}).subscribe(
+          this.api.getNewsAndCategorys().subscribe(
              response => 
                     { 
                         if(response.json().status)
@@ -152,7 +156,7 @@ export class NoticiasPage {
                     },
              error => {
                  let alert = this.alertCtrl.create({
-                      title: 'Error al hacer la peticion al servidor',
+                      title: '500',
                       message: error,
                       buttons: ['Volver']             
                  });
