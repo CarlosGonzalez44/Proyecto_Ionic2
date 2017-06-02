@@ -49,4 +49,12 @@ export class LoginService {
 		return this.token;
 	}
 
+	validateUser(){
+		var valid=false;
+		if(this.getToken()!=null){
+			valid=true;
+		}
+		return valid;
+	}
+
 }

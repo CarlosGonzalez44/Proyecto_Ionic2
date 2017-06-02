@@ -2,10 +2,8 @@ import { ApiService } from './../../services/api.service';
 import { LoginPage } from './../login/login';
 import { LoginService } from './../../services/login.service';
 import { NoticiaPage } from './../noticia/noticia';
-import { ChatsPage } from './../chats/chats';
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController } from 'ionic-angular';
-import { Http, Response, Headers } from '@angular/http';
+import { NavController, NavParams } from 'ionic-angular';
 
 
 @Component({
@@ -13,35 +11,27 @@ import { Http, Response, Headers } from '@angular/http';
   templateUrl: 'noticias.html'
 })
 export class NoticiasPage {
+    
   noticiaPage = NoticiaPage;
-  private url = "http://localhost/depinfo/web/app_dev.php";
-  private headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
   aux = '../../assets/imagenes/1.jpg';
   cat;
-  public noticias;
+  noticias;
   categorias;
 
-  constructor(public navCtrl: NavController,public _http: Http,public navParams: NavParams,public logServ:LoginService,public alertCtrl: AlertController, public api:ApiService) {
+  constructor(public navCtrl: NavController,public navParams: NavParams,public logServ:LoginService, public api:ApiService) {
      //this.noticias = JSON.parse(localStorage.getItem('noticias'));
   }
-  setNoticias(n){
-     this.noticias = n;
 
-  }
   ngOnInit(){
-      var token = this.logServ.getToken();
-      if(token!=null){
+
+      if(this.logServ.validateUser())
+      {
          this.api.getNewsAndCategorys().subscribe(
             
                 response => {
                     if(response.json().status)
                     {
-                        let alert = this.alertCtrl.create({
-                                title: response.json().status,
-                                message: response.json().data,
-                                buttons: ['Volver']
-                        });
-                        alert.present();
+                        this.api.launchMessage(response.json().status,response.json().data);
                         this.navCtrl.setRoot(LoginPage);
                     }
                     else
@@ -51,42 +41,28 @@ export class NoticiasPage {
                     }
                 },
                 error => {
-                    let alert = this.alertCtrl.create({
-                        title: '500',
-                        message: error,
-                        buttons: ['Volver']
-                    });
-                    alert.present();
+                    this.api.launchMessage('500',error);
                 }
           );
       }
       else
       {
-          let alert = this.alertCtrl.create({
-                title: 'Error de autenticación',
-                message: 'Debes estar logeado para acceder a esta página.',
-                buttons: ['Volver']
-                });
-          alert.present();
-          this.navCtrl.setRoot(LoginPage);
+          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
+          this.navCtrl.setRoot(LoginPage); 
       }
       
   }
 
   filtroNoticias(){
-      var token = this.logServ.getToken();
-      if(token!=null){
+
+      if(this.logServ.validateUser())
+      {
           this.api.getNewsAndCategorys().subscribe(
              response => 
                     { 
                         if(response.json().status)
                         {
-                            let alert = this.alertCtrl.create({
-                                title: 'Error '+response.json().status,
-                                message: response.json().data,
-                                buttons: ['Volver']
-                            });
-                            alert.present();
+                            this.api.launchMessage(response.json().status,response.json().data);
                             this.navCtrl.setRoot(LoginPage);
                         }
                         else
@@ -108,71 +84,45 @@ export class NoticiasPage {
                         }
                     },
              error => {
-                 let alert = this.alertCtrl.create({
-                      title: '500',
-                      message: error,
-                      buttons: ['Volver']
-                 });
-                 alert.present();
+                 this.api.launchMessage('500',error);
              }
           );
       }
       else
       {
-          let alert = this.alertCtrl.create({
-                title: 'Error de autenticación',
-                message: 'Debes estar logeado para acceder a esta página.',
-                buttons: ['Volver']
-                });
-          alert.present();
+          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
           this.navCtrl.setRoot(LoginPage);
       }
   }
 
   doRefresh(refresher){
 
-    var token = this.logServ.getToken();
-      if(token!=null){
+      if(this.logServ.validateUser())
+      {
           this.api.getNewsAndCategorys().subscribe(
              response => 
-                    { 
+             { 
                         if(response.json().status)
                         {
-                            let alert = this.alertCtrl.create({
-                                title: 'Error '+response.json().status,
-                                message: response.json().data,
-                                buttons: ['Volver']
-                            });
-                            alert.present();
+                            this.api.launchMessage(response.json().status,response.json().data);
                             this.navCtrl.setRoot(LoginPage);
-                            refresher.complete();
                         }
                         else
                         {
                             this.noticias = response.json()[0];
                             this.categorias = response.json()[1];
-                            refresher.complete();
                         }
-                    },
+                        refresher.complete();
+             },
              error => {
-                 let alert = this.alertCtrl.create({
-                      title: '500',
-                      message: error,
-                      buttons: ['Volver']             
-                 });
-                 alert.present();
+                 this.api.launchMessage('500',error);
                  refresher.complete();
              }
           );
       }
       else
       {
-          let alert = this.alertCtrl.create({
-                title: 'Error de autenticación',
-                message: 'Debes estar logeado para acceder a esta página.',
-                buttons: ['Volver']
-                });
-          alert.present();
+          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
           this.navCtrl.setRoot(LoginPage);
           refresher.complete();
       }

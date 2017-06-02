@@ -13,6 +13,17 @@ export class ApiService {
     constructor(public _http: Http,public logServ:LoginService,public alertCtrl: AlertController){
 
     }
+    launchMessage(title,message){
+		let alert = this.alertCtrl.create({
+               title: title,
+               message: message,
+               buttons: ['Volver']
+         });
+         alert.present();
+	}
+
+
+
 
 	getNewsAndCategorys(){
 		var token = this.logServ.getToken();
