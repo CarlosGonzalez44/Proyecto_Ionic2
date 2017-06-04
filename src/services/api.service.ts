@@ -7,10 +7,10 @@ import { Http, Response, Headers } from '@angular/http';
 @Injectable()
 export class ApiService {
 
-    public url = "http://localhost/depinfo/web/app_dev.php";
-	public headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
+    private url = "http://localhost/depinfo/web/app_dev.php";
+	private headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
 
-    constructor(public _http: Http,public logServ:LoginService,public alertCtrl: AlertController){
+    constructor(private http: Http,private logServ:LoginService,private alertCtrl: AlertController){
 
     }
     launchMessage(title,message){
@@ -22,13 +22,37 @@ export class ApiService {
          alert.present();
 	}
 
-
-
-
 	getNewsAndCategorys(){
 		var token = this.logServ.getToken();
 
-		return this._http.get(this.url+"/noticiasapp/"+token ,{headers : this.headers})		
+		return this.http.get(this.url+"/noticiasapp/"+token ,{headers : this.headers})		
 	}
+
+    getRooms(){
+		var token = this.logServ.getToken();
+
+		return this.http.get(this.url+"/salasapp/"+token ,{headers : this.headers})		
+	}
+    getMessages(idRoom){
+		var token = this.logServ.getToken();
+
+		return this.http.get(this.url+"/salasapp/"+token+"/"+idRoom ,{headers : this.headers})		
+	}
+    sendMessage(message,idRoom){
+      var token = this.logServ.getToken();
+
+      var datos = {
+          "token" : this.logServ.getToken(),
+          "content": message,
+          "idRoom": idRoom
+      }
+
+      let json = JSON.stringify(datos);
+      let params = "json="+json;
+
+      return this.http.post(this.url+"/messageapp",params,{headers : this.headers}).map(
+        res => res.json()
+        );
+    }
 
 }

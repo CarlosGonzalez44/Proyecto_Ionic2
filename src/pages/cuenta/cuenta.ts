@@ -8,8 +8,12 @@ import { NavController } from 'ionic-angular';
 })
 export class CuentaPage {
 
+
   constructor(public navCtrl: NavController) {
 
+  }
+  ngOnInit(){
+    console.log(localStorage.getItem('token'));
   }
   logout(){
       localStorage.setItem('identity',null);

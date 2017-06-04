@@ -1,3 +1,4 @@
+import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -11,9 +12,18 @@ export class LoginService {
     public identity;
 	public token;
 
-    constructor(private _http: Http){
+    constructor(private _http: Http,private alertCtrl: AlertController){
 
     }
+
+	launchMessage(title,message){
+		let alert = this.alertCtrl.create({
+               title: title,
+               message: message,
+               buttons: ['Volver']
+         });
+         alert.present();
+	}
 
     signup(user_to_login){
       let json = JSON.stringify(user_to_login);

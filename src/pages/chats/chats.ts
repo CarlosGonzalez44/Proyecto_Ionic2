@@ -1,8 +1,10 @@
+import { LoginPage } from './../login/login';
+import { LoginService } from './../../services/login.service';
+import { ApiService } from './../../services/api.service';
 import { SalaChatModule } from './../sala-chat/sala-chat.module';
 import { Component } from '@angular/core';
 import { SalaChatPage } from '../sala-chat/sala-chat';
-import { NavController } from 'ionic-angular';
-
+import { NavController, NavParams } from 'ionic-angular';
 
 @Component({
   selector: 'page-chats',
@@ -10,45 +12,55 @@ import { NavController } from 'ionic-angular';
 })
 export class ChatsPage {
 
+
   salaPage = SalaChatPage;
+  aux = '../../assets/imagenes/1.jpg';
+  rooms;
+  roomRecharge;
 
-  chats = [
-    {
-      nombre: 'sala1',
-      autor: 'autor1',
-      mensajes: 'aqui iria un array de mensajes y usuarios',
-      participantes: ["uno","dos","tres","cuatro"],
-      rutaFoto: '../../assets/imagenes/1.jpg',
-      fecha: 'hoy'
-    },
-    {
-      nombre: 'sala2',
-      autor: 'autor2',
-      mensajes: 'aqui iria un array de mensajes y usuarios',
-      participantes: ["uno","dos","tres","cuatro"],
-      rutaFoto: '../../assets/imagenes/1.jpg',
-      fecha: 'hoy'
-    },
-    {
-      nombre: 'sala3',
-      autor: 'autor3',
-      mensajes: 'aqui iria un array de mensajes y usuarios',
-      participantes: ["uno","dos","tres","cuatro"],
-      rutaFoto: '../../assets/imagenes/1.jpg',
-      fecha: 'hoy'
-    },
-    {
-      nombre: 'sala4',
-      autor: 'autor4',
-      mensajes: 'aqui iria un array de mensajes y usuarios',
-      participantes: ["uno","dos","tres","cuatro"],
-      rutaFoto: '../../assets/imagenes/1.jpg',
-      fecha: 'hoy'
-    }
-  ];
+  constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService) {
+     
+  }
   
-  constructor(public navCtrl: NavController) {
-
+  ngOnInit(){
+     this.getRooms();
+  }
+  ionViewWillEnter(){
+      let S = this;
+      this.roomRecharge=setInterval(function(){
+         S.getRooms();
+      },4000);
+  }
+  ionViewWillLeave(){
+    clearInterval(this.roomRecharge);
+  }
+  getRooms(){
+    console.log("peticionC")
+      if(this.logServ.validateUser())
+      {
+         this.api.getRooms().subscribe(
+            
+                response => {
+                    if(response.json().status)
+                    {
+                        this.api.launchMessage(response.json().status,response.json().data);
+                        this.navCtrl.setRoot(LoginPage);
+                    }
+                    else
+                    {
+                        this.rooms = response.json();
+                    }
+                },
+                error => {
+                    this.api.launchMessage('500',error);
+                }
+          );
+      }
+      else
+      {
+          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
+          this.navCtrl.setRoot(LoginPage); 
+      }
   }
 
 }

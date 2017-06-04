@@ -15,7 +15,7 @@ export class LoginPage {
   public identity;
   public token;
 
-  constructor(public navCtrl: NavController,public alertCtrl:AlertController, private _loginService:LoginService) {
+  constructor(public navCtrl: NavController,public alertCtrl:AlertController, private loginService:LoginService) {
 
   }
 
@@ -27,13 +27,13 @@ export class LoginPage {
         "getHash":  "false"
     }
 
-    this._loginService.signup(user).subscribe(
+    this.loginService.signup(user).subscribe(
        response => {
           let identity = response;
           this.identity = identity;
 
           if(this.identity.length <= 1){
-              alert("Error en el servidor")
+              this.loginService.launchMessage('500','Error en el servidor.');
           }
           else
           {
@@ -43,13 +43,13 @@ export class LoginPage {
                   user.getHash = "true";
 
                   // GET TOKEN
-                  this._loginService.signup(user).subscribe(
+                  this.loginService.signup(user).subscribe(
                       response => {
                         let token = response;
                         this.token = token;
 
                         if(this.token.length <= 0){
-                          alert("Error en el servidor");
+                          this.loginService.launchMessage('500','Error en el servidor.');
                         }else{
                           if(!this.token.status){
                             localStorage.setItem('token', token);
@@ -59,10 +59,8 @@ export class LoginPage {
                       },
                       error => {
                       this.errorMessage = <any>error;
-
                       if(this.errorMessage != null){
-                        console.log(this.errorMessage);
-                        alert("Error en la petición");
+                        this.loginService.launchMessage('500','Error en la peticion.');
                       }
                     }
 
@@ -80,17 +78,5 @@ export class LoginPage {
           }
        }
     );
-    /*if(Global.usuario === formulario.value.username && Global.password === formulario.value.clave)
-    {
-      this.navCtrl.setRoot(TabsPage);
-    }
-    else
-    {
-      let alerta = this.alertCtrl.create({
-        message: "Acceso denegado, usuario o contraseña incorrectos.",
-        buttons: ["Cerrar"]
-      });
-      alerta.present();
-    } */
   }
 }

@@ -9,15 +9,16 @@
 <ion-content padding>
   <ion-list>
     <ion-list-header>Salas de chat</ion-list-header>
-
+    
     <button ion-item [navPush]="salaPage"
-                     [navParams]=chat
-                     *ngFor="let chat of chats">
+                     [navParams]=r
+                     *ngFor="let r of rooms">
       <ion-avatar item-left>
-        <img src="{{chat.rutaFoto}}" />
+        <img src="{{aux}}" />
       </ion-avatar>
-      <h2>{{ chat.nombre }}</h2>
-      <p>Creador: {{ chat.autor }}</p>
+      <h2>{{ r.title }}</h2>
+      <p>Creador: {{ r.author }}</p>
+      <p>Año: {{ r.year }}</p>
     </button>
 
   </ion-list>

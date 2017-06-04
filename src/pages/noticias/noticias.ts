@@ -18,7 +18,7 @@ export class NoticiasPage {
   noticias;
   categorias;
 
-  constructor(public navCtrl: NavController,public navParams: NavParams,public logServ:LoginService, public api:ApiService) {
+  constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService) {
      //this.noticias = JSON.parse(localStorage.getItem('noticias'));
   }
 
@@ -102,17 +102,17 @@ export class NoticiasPage {
           this.api.getNewsAndCategorys().subscribe(
              response => 
              { 
-                        if(response.json().status)
-                        {
-                            this.api.launchMessage(response.json().status,response.json().data);
-                            this.navCtrl.setRoot(LoginPage);
-                        }
-                        else
-                        {
-                            this.noticias = response.json()[0];
-                            this.categorias = response.json()[1];
-                        }
-                        refresher.complete();
+                   if(response.json().status)
+                   {
+                       this.api.launchMessage(response.json().status,response.json().data);
+                       this.navCtrl.setRoot(LoginPage);
+                   }
+                   else
+                   {
+                       this.noticias = response.json()[0];
+                       this.categorias = response.json()[1];
+                   }
+                   refresher.complete();
              },
              error => {
                  this.api.launchMessage('500',error);

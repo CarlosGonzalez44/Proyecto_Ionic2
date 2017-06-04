@@ -1,23 +1,23 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{sala.nombre}}<ion-icon (click)="mostrarParticipantes()" name="people"></ion-icon></ion-title>
+    <ion-title>{{room.title}}<ion-icon (click)="mostrarParticipantes()" name="people"></ion-icon></ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content class="cards-bg social-cards">
 
-<ion-card *ngFor="let mensaje of mensajes">
+<ion-card *ngFor="let m of messages">
 
   <ion-item>
     <ion-avatar item-left>
       <img src="{{rutaFoto}}">
     </ion-avatar>
-    <h2>{{mensaje.autor}}</h2>
-    <p>{{mensaje.fecha}}</p>
+    <h2>{{m.user.name}}</h2>
+    <p>{{m.date.date}}</p>
   </ion-item>
 
   <ion-card-content>
-    <p>{{mensaje.contenido}}</p>
+    <p>{{m.content}}</p>
   </ion-card-content>
 
 </ion-card>
@@ -25,6 +25,6 @@
 </ion-content>
 
 <ion-footer>
-    <input ion-input type="text"  placeholder="Message..." />
-    <button ion-button>Send</button>
+    <input ion-input [(ngModel)]="newMessage" type="text"  placeholder="Message..." />
+    <button ion-button (click)="sendMessage()">Send</button>
 </ion-footer>

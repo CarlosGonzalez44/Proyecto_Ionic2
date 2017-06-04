@@ -1,7 +1,8 @@
+import { ApiService } from './../../services/api.service';
+import { LoginService } from './../../services/login.service';
+import { LoginPage } from './../login/login';
 import { Component } from '@angular/core';
-import { ModalController,IonicPage, NavController, NavParams, AlertController,ViewController,Platform } from 'ionic-angular';
-
-
+import { ModalController, NavController, NavParams, ViewController,Platform } from 'ionic-angular';
 
 @Component({
   selector: 'page-sala-chat',
@@ -9,47 +10,75 @@ import { ModalController,IonicPage, NavController, NavParams, AlertController,Vi
 })
 export class SalaChatPage {
 
-  sala;
+  room;messages;
   rutaFoto = '../../assets/imagenes/1.jpg';
-  mensajes = [
-    {
-      autor: 'autor1',
-      contenido: 'aqui iria un array de mensajes y usuarios',
-      fecha: 'hoy'
-    },
-    {
-      autor: 'autor2',
-      contenido: 'aqui iria un array de mensajes y usuarios',
-      fecha: 'hoy'
-    },
-    {
-      autor: 'autor3',
-      contenido: 'aqui iria un array de mensajes y usuarios',
-      fecha: 'hoy'
-    },
-    {
-      autor: 'autor4',
-      contenido: 'mensaje condenadanadanadanadanadanadanadanadanadanadanadanadanadanadamente largo',
-      fecha: 'hoy'
-    }
-  ];
-
-  constructor(public modalCtrl: ModalController,public navCtrl: NavController, public navParams: NavParams, public alertCtrl:AlertController) {
-    this.sala = navParams.data;
+  roomRecharge;
+  newMessage;
+  constructor(public modalCtrl: ModalController,public navCtrl: NavController, public navParams: NavParams,
+              private logServ:LoginService,private api:ApiService) 
+  {
+    this.room = navParams.data;
   } 
+  ngOnInit(){
+     this.getMessages();
+  }
 
-  /*mostrarParticipantes(){
-    let alerta = this.alertCtrl.create({
-      message: this.sala.participantes,
-      buttons: ["Cerrar"]
-    });
+  ionViewWillEnter(){
+      let S = this;
+      this.roomRecharge=setInterval(function(){
+         S.getMessages();
+      },4000);
+  }
+  ionViewWillLeave(){
+    clearInterval(this.roomRecharge);
+  }
 
-    alerta.present();
+  getMessages(){
+      console.log("peticionS")
+      if(this.logServ.validateUser())
+      {
+         this.api.getMessages(this.room.id).subscribe(
+            
+                response => {
+                    if(response.json().status)
+                    {
+                        this.api.launchMessage(response.json().status,response.json().data);
+                        this.navCtrl.setRoot(LoginPage);
+                    }
+                    else
+                    {
+                        this.messages = response.json();
+                    }
+                },
+                error => {
+                    this.api.launchMessage('500',error);
+                }
+          );
+      }
+      else
+      {
+          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
+          this.navCtrl.setRoot(LoginPage); 
+      }
+      
+  }
+  
+  sendMessage(){
 
-  }*/
+    this.api.sendMessage(this.newMessage,this.room.id).subscribe(
+       response => {
+          console.log(response);
+       },
+       error => {
+         console.log(error);
+       }
+    );
+    this.newMessage = "";
+  }
+
   mostrarParticipantes() {
 
-    let modal = this.modalCtrl.create(ParticipantesModal,{"participantes":this.sala.participantes});
+    let modal = this.modalCtrl.create(ParticipantesModal,{"participantes":this.room.users});
     modal.present();
   }
 
@@ -78,7 +107,7 @@ export class SalaChatPage {
         <ion-avatar item-left>
           <img src="{{rutaFoto}}"/>
         </ion-avatar>
-        <h2>{{p}}</h2>
+        <h2>{{p.name}}</h2>
       </ion-item>
   </ion-list>
 </ion-content>
@@ -87,11 +116,7 @@ export class SalaChatPage {
 export class ParticipantesModal {
   participantes;
   rutaFoto = '../../assets/imagenes/1.jpg';
-  constructor(
-    public platform: Platform,
-    public params: NavParams,
-    public viewCtrl: ViewController
-  ) {
+  constructor(public platform: Platform,public params: NavParams,public viewCtrl: ViewController) {
     this.participantes=this.params.get('participantes');
   }
 
