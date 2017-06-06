@@ -29,6 +29,8 @@
 </ion-content>
 
 <ion-footer>
-    <input ion-input [(ngModel)]="newMessage" type="text"  placeholder="Message..." />
-    <button ion-button (click)="sendMessage()">Send</button>
+    <ion-item>
+      <ion-input type="text" [(ngModel)]="newMessage" placeholder="Introduce un mensaje"></ion-input>
+    </ion-item>
+    <button ion-button block (click)="sendMessage()">Send</button>
 </ion-footer>

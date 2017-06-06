@@ -21,16 +21,31 @@ export class SalaChatPage {
               private logServ:LoginService,private api:ApiService) 
   {
     this.room = navParams.data;
-    console.log(this.room.id);
+
     this.socket = io('http://localhost:3000');
-    this.socket.emit('initialCharge', this.room.id);    
+    this.socket.emit('initialCharge', this.room.id,this.logServ.getToken());    
     this.socket.on('initialCharge', (all) => {
-        this.messages = all.messages;
-        this.users = all.users;
+
+        if(typeof(all.Error) != "undefined"){
+            this.api.launchMessage("Error",all.Error);
+        }
+        else{
+            this.messages = all.messages;
+            this.users = all.users;
+        }
     });
 
     this.socket.on('message', (msg) => {
-      this.messages.push(msg);
+
+      if(typeof(msg.Error) != "undefined"){
+         this.api.launchMessage("Error",msg.Error);
+      }
+      else{
+        if(typeof(this.messages) == "undefined"){
+          this.messages = [];
+        }
+        this.messages.push(msg);
+      }
     });
 
   } 
@@ -89,14 +104,13 @@ export class SalaChatPage {
        }
     );*/
     if(this.newMessage != ''){
-      console.log(this.logServ.getIdentity().sub);
-      console.log(this.logServ.getIdentity().name);
+
       var m = {"idUser":this.logServ.getIdentity().sub,
                "idRoom": this.room.id,
                "content":this.newMessage,
                "nameUser": this.logServ.getIdentity().name
               };
-      this.socket.emit('message', m);
+      this.socket.emit('message', m,this.logServ.getToken());
     }
     this.newMessage = "";
   }

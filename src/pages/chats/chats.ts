@@ -23,7 +23,13 @@ export class ChatsPage {
         this.socket = io('http://localhost:3000');
         
         this.socket.on('room', (rooms) => {
-            this.rooms = rooms;
+
+            if(typeof(rooms.Error) != "undefined"){
+                this.api.launchMessage("Error",rooms.Error);
+            }
+            else{
+                this.rooms = rooms;
+            }
         });
   }
 
@@ -36,7 +42,7 @@ export class ChatsPage {
       let S = this;
       this.roomRecharge=setInterval(function(){
          //S.getRooms();
-         S.socket.emit('room', S.logServ.getIdentity().sub);
+         S.socket.emit('room', S.logServ.getIdentity().sub,S.logServ.getToken());
 
       },4000);
   }

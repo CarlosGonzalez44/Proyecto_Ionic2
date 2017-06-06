@@ -4,7 +4,7 @@
     <ion-title>Home</ion-title>
   </ion-navbar>
 </ion-header>
-<!--
+
 <ion-content padding>
   <h2>Página principal</h2>
   <p>
@@ -13,16 +13,4 @@
   </p>
 
 </ion-content>
--->
 
-<ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let message of chats">{{message}}</ion-item>
-  </ion-list>
-
-  <ion-item>
-    <ion-input type="text" [(ngModel)]="chat_input" placeholder="Enter message"></ion-input>
-  </ion-item>
-
-  <button ion-button block (click)="send(chat_input)">Send</button>
-</ion-content>
