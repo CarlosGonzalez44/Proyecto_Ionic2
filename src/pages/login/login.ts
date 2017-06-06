@@ -1,6 +1,5 @@
 import { LoginService } from '../../services/login.service';
 import { TabsPage } from './../tabs/tabs';
-import { Global } from './../../app/global';
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';

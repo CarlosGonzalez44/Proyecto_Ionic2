@@ -1,4 +1,3 @@
-import { Http,Response, Headers } from '@angular/http';
 import { LoginService } from './../../services/login.service';
 
 import { Component } from '@angular/core';
@@ -23,9 +22,9 @@ export class TabsPage {
   public user = "";
   public identity;
 
-  constructor(private _loginService:LoginService,private _http: Http) {
+  constructor(private loginService:LoginService) {
     //cojo la identidad del usuario y pongo el nombre del usuario en el boton perfil
-      this.identity = this._loginService.getIdentity();
+      this.identity = this.loginService.getIdentity();
       if(this.identity){
          this.user = this.identity.name;
       }

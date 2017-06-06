@@ -2,6 +2,7 @@ import { ApiService } from './../../services/api.service';
 import { LoginService } from './../../services/login.service';
 import { LoginPage } from './../login/login';
 import { Component } from '@angular/core';
+import * as io from 'socket.io-client';
 import { ModalController, NavController, NavParams, ViewController,Platform } from 'ionic-angular';
 
 @Component({
@@ -10,16 +11,30 @@ import { ModalController, NavController, NavParams, ViewController,Platform } fr
 })
 export class SalaChatPage {
 
+  socket:any
   room;messages;
   rutaFoto = '../../assets/imagenes/1.jpg';
   roomRecharge;
   newMessage;
+  users;
   constructor(public modalCtrl: ModalController,public navCtrl: NavController, public navParams: NavParams,
               private logServ:LoginService,private api:ApiService) 
   {
     this.room = navParams.data;
+    console.log(this.room.id);
+    this.socket = io('http://localhost:3000');
+    this.socket.emit('initialCharge', this.room.id);    
+    this.socket.on('initialCharge', (all) => {
+        this.messages = all.messages;
+        this.users = all.users;
+    });
+
+    this.socket.on('message', (msg) => {
+      this.messages.push(msg);
+    });
+
   } 
-  ngOnInit(){
+  /*ngOnInit(){
      this.getMessages();
   }
 
@@ -62,23 +77,34 @@ export class SalaChatPage {
       }
       
   }
-  
+  */
   sendMessage(){
 
-    this.api.sendMessage(this.newMessage,this.room.id).subscribe(
+    /*this.api.sendMessage(this.newMessage,this.room.id).subscribe(
        response => {
           console.log(response);
        },
        error => {
          console.log(error);
        }
-    );
+    );*/
+    if(this.newMessage != ''){
+      console.log(this.logServ.getIdentity().sub);
+      console.log(this.logServ.getIdentity().name);
+      var m = {"idUser":this.logServ.getIdentity().sub,
+               "idRoom": this.room.id,
+               "content":this.newMessage,
+               "nameUser": this.logServ.getIdentity().name
+              };
+      this.socket.emit('message', m);
+    }
     this.newMessage = "";
   }
 
   mostrarParticipantes() {
 
-    let modal = this.modalCtrl.create(ParticipantesModal,{"participantes":this.room.users});
+    let modal = this.modalCtrl.create(ParticipantesModal,{"participantes":this.users});
+    //let modal = this.modalCtrl.create(ParticipantesModal,{"participantes":this.room.users});
     modal.present();
   }
 

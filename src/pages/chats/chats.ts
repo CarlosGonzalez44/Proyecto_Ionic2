@@ -5,6 +5,7 @@ import { SalaChatModule } from './../sala-chat/sala-chat.module';
 import { Component } from '@angular/core';
 import { SalaChatPage } from '../sala-chat/sala-chat';
 import { NavController, NavParams } from 'ionic-angular';
+import * as io from 'socket.io-client';
 
 @Component({
   selector: 'page-chats',
@@ -12,28 +13,37 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ChatsPage {
 
-
+  socket:any
   salaPage = SalaChatPage;
   aux = '../../assets/imagenes/1.jpg';
   rooms;
   roomRecharge;
 
   constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService) {
-     
+        this.socket = io('http://localhost:3000');
+        
+        this.socket.on('room', (rooms) => {
+            this.rooms = rooms;
+        });
   }
-  
+
+  /* 
   ngOnInit(){
      this.getRooms();
   }
+  */
   ionViewWillEnter(){
       let S = this;
       this.roomRecharge=setInterval(function(){
-         S.getRooms();
+         //S.getRooms();
+         S.socket.emit('room', S.logServ.getIdentity().sub);
+
       },4000);
   }
   ionViewWillLeave(){
     clearInterval(this.roomRecharge);
   }
+  /*
   getRooms(){
     console.log("peticionC")
       if(this.logServ.validateUser())
@@ -61,6 +71,6 @@ export class ChatsPage {
           this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
           this.navCtrl.setRoot(LoginPage); 
       }
-  }
+  }*/
 
 }
