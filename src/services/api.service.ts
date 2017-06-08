@@ -3,12 +3,14 @@ import { LoginService } from './login.service';
 import {AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
+import * as io from 'socket.io-client';
 
 @Injectable()
 export class ApiService {
 
     private url = "http://localhost/depinfo/web/app_dev.php";
 	private headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
+    private socket:any;
 
     constructor(private http: Http,private logServ:LoginService,private alertCtrl: AlertController){
 
@@ -28,6 +30,20 @@ export class ApiService {
 		return this.http.get(this.url+"/noticiasapp/"+token ,{headers : this.headers})		
 	}
 
+    setWebSocketConnection(token){
+        this.socket = io('http://localhost:3000',{query: "token="+token});
+    }
+    getWebSocketConnection(){
+        return this.socket;
+    }
+    closeWebsocketConnection(){
+        this.socket.emit('close');
+    }
+    emit(channel,parameters){
+        this.socket.emit(channel,parameters)
+    }
+
+    /* Estas funciones fueron creadas para el chat con ajax, actualmente en desuso
     getRooms(){
 		var token = this.logServ.getToken();
 
@@ -53,6 +69,6 @@ export class ApiService {
       return this.http.post(this.url+"/messageapp",params,{headers : this.headers}).map(
         res => res.json()
         );
-    }
+    }*/
 
 }

@@ -20,63 +20,34 @@ export class ChatsPage {
   roomRecharge;
 
   constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService) {
-        this.socket = io('http://localhost:3000');
         
-        this.socket.on('room', (rooms) => {
 
-            if(typeof(rooms.Error) != "undefined"){
-                this.api.launchMessage("Error",rooms.Error);
-            }
-            else{
-                this.rooms = rooms;
-            }
-        });
   }
-
-  /* 
-  ngOnInit(){
-     this.getRooms();
-  }
-  */
+  
   ionViewWillEnter(){
-      let S = this;
-      this.roomRecharge=setInterval(function(){
-         //S.getRooms();
-         S.socket.emit('room', S.logServ.getIdentity().sub,S.logServ.getToken());
 
-      },4000);
+     this.api.setWebSocketConnection(this.logServ.getToken());
+     this.api.emit('room',this.logServ.getToken());
+     this.api.getWebSocketConnection().on('room', (rooms) => {
+
+         if(typeof(rooms.BD) != "undefined"){
+            this.api.launchMessage("Error",rooms.BD);
+            this.api.closeWebsocketConnection();
+          }
+          else if(typeof(rooms.AUTH) != "undefined"){
+            this.api.launchMessage("Error",rooms.AUTH);
+            this.api.closeWebsocketConnection();
+            this.navCtrl.setRoot(LoginPage); 
+          }
+          else{
+             this.rooms = rooms;
+          }  
+          
+      });
   }
   ionViewWillLeave(){
-    clearInterval(this.roomRecharge);
-  }
-  /*
-  getRooms(){
-    console.log("peticionC")
-      if(this.logServ.validateUser())
-      {
-         this.api.getRooms().subscribe(
-            
-                response => {
-                    if(response.json().status)
-                    {
-                        this.api.launchMessage(response.json().status,response.json().data);
-                        this.navCtrl.setRoot(LoginPage);
-                    }
-                    else
-                    {
-                        this.rooms = response.json();
-                    }
-                },
-                error => {
-                    this.api.launchMessage('500',error);
-                }
-          );
-      }
-      else
-      {
-          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
-          this.navCtrl.setRoot(LoginPage); 
-      }
-  }*/
+    
+    this.api.closeWebsocketConnection();
 
+  }
 }
