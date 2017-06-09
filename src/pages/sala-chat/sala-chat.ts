@@ -2,8 +2,7 @@ import { ApiService } from './../../services/api.service';
 import { LoginService } from './../../services/login.service';
 import { LoginPage } from './../login/login';
 import { Component } from '@angular/core';
-import * as io from 'socket.io-client';
-import { ModalController, NavController, NavParams, ViewController,Platform } from 'ionic-angular';
+import { ModalController, Platform, NavController, NavParams, ViewController, App } from 'ionic-angular';
 
 @Component({
   selector: 'page-sala-chat',
@@ -19,7 +18,7 @@ export class SalaChatPage {
   newMessage;
   users;
   constructor(public modalCtrl: ModalController,public navCtrl: NavController, public navParams: NavParams,
-              private logServ:LoginService,private api:ApiService) 
+              private logServ:LoginService,private api:ApiService,private app:App) 
   {
     this.room = navParams.data;
     //localStorage.clear();
@@ -51,7 +50,8 @@ export class SalaChatPage {
           else if(typeof(msgs.AUTH) != "undefined"){
             this.api.launchMessage("Error",msgs.AUTH);
             this.api.closeWebsocketConnection();
-            this.navCtrl.setRoot(LoginPage); 
+            this.logServ.logout();
+            this.app.getRootNav().setRoot(LoginPage);
           }
           else{
               if(msgs.length >= 1)
@@ -74,7 +74,8 @@ export class SalaChatPage {
           else if(typeof(msg.AUTH) != "undefined"){
             this.api.launchMessage("Error",msg.AUTH);
             this.api.closeWebsocketConnection();
-            this.navCtrl.setRoot(LoginPage); 
+            this.logServ.logout();
+            this.app.getRootNav().setRoot(LoginPage);
           }
           else{
             
@@ -143,9 +144,9 @@ export class SalaChatPage {
 export class ParticipantesModal {
   participantes;
   idRoom;
-  socket:any
   rutaFoto = '../../assets/imagenes/1.jpg';
-  constructor(public platform: Platform,public params: NavParams,public viewCtrl: ViewController, public api:ApiService,public logServ:LoginService,public navCtrl:NavController) {
+  constructor(public platform: Platform,public params: NavParams,public viewCtrl: ViewController, public api:ApiService,
+              public logServ:LoginService,public navCtrl:NavController, private app:App) {
 
     this.idRoom = this.params.get('room');
 
@@ -164,7 +165,8 @@ export class ParticipantesModal {
         else if(typeof(data.AUTH) != "undefined"){
             this.api.launchMessage("Error",data.AUTH);
             this.api.closeWebsocketConnection();
-            this.navCtrl.setRoot(LoginPage); 
+            this.logServ.logout();
+            this.app.getRootNav().setRoot(LoginPage);
         }
         else{
             this.participantes = data;

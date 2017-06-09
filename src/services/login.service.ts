@@ -1,4 +1,5 @@
-import { AlertController } from 'ionic-angular';
+import { LoginPage } from './../pages/login/login';
+import { AlertController} from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -12,7 +13,7 @@ export class LoginService {
     public identity;
 	public token;
 
-    constructor(private _http: Http,private alertCtrl: AlertController){
+    constructor(private http: Http,private alertCtrl: AlertController){
 
     }
 
@@ -25,12 +26,17 @@ export class LoginService {
          alert.present();
 	}
 
+	logout(){
+	  localStorage.setItem('identity',null);
+      localStorage.setItem('token',null);
+	}
+
     signup(user_to_login){
       let json = JSON.stringify(user_to_login);
       let params = "json="+json;
       let headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
 
-      return this._http.post(this.url+"/loginapp",params,{headers : headers}).map(
+      return this.http.post(this.url+"/loginapp",params,{headers : headers}).map(
         res => res.json()
         );
     }

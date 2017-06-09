@@ -11,6 +11,8 @@ export class HomePage {
   constructor(public navCtrl: NavController) {
 
   }
-
+  ngOnInit(){
+    console.log(localStorage.getItem('token'));
+  }
 
 }

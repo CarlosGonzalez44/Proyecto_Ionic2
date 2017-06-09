@@ -1,7 +1,8 @@
+
 import { LoginService } from '../../services/login.service';
 import { TabsPage } from './../tabs/tabs';
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -10,13 +11,10 @@ import { NgForm } from '@angular/forms';
 })
 export class LoginPage {
 
-  public errorMessage;
-  public identity;
-  public token;
-
-  constructor(public navCtrl: NavController,public alertCtrl:AlertController, private loginService:LoginService) {
+  constructor(public navCtrl: NavController, private loginService:LoginService) {
 
   }
+
 
   login(formulario:NgForm)
   {
@@ -25,57 +23,44 @@ export class LoginPage {
         "password": formulario.value.password,
         "getHash":  "false"
     }
-
+    //mediante esta peticion obtendre el usuario en plano para almacenarlo en local
     this.loginService.signup(user).subscribe(
        response => {
-          let identity = response;
-          this.identity = identity;
 
-          if(this.identity.length <= 1){
-              this.loginService.launchMessage('500','Error en el servidor.');
+          if(response.length <= 1){
+              this.loginService.launchMessage('Error','Error en el servidor.');
           }
           else
           {
-              if(!this.identity.status){
-                  localStorage.setItem('identity', JSON.stringify(identity));
-                  //console.log(localStorage.getItem('identity'));
+              if(!response.status){
+                  localStorage.setItem('identity', JSON.stringify(response));
                   user.getHash = "true";
 
-                  // GET TOKEN
+                  // Ahora hacemos otra peticion para obtener el token del usuario y almacenarlo igualmente
                   this.loginService.signup(user).subscribe(
                       response => {
-                        let token = response;
-                        this.token = token;
 
-                        if(this.token.length <= 0){
-                          this.loginService.launchMessage('500','Error en el servidor.');
+                        if(response.length <= 0){
+                          this.loginService.launchMessage('Error','Error en el servidor.');
                         }else{
-                          if(!this.token.status){
-                            localStorage.setItem('token', token);
+                          if(!response.status){
+                            localStorage.setItem('token', response);
                             this.navCtrl.setRoot(TabsPage);
                           }
                         }
                       },
                       error => {
-                      this.errorMessage = <any>error;
-                      if(this.errorMessage != null){
-                        this.loginService.launchMessage('500','Error en la peticion.');
+                      if(error != null){
+                        this.loginService.launchMessage('Error','Error en la peticion.');
                       }
-                    }
-
-                  );
-
+                    });
               }
           }
-
        },
        error => {
-          this.errorMessage = <any>error;
-          if(this.errorMessage != null){
-            console.log(this.errorMessage);
-            alert("Error en la peticion");
+          if(error != null){
+            this.loginService.launchMessage('Error','Error en la peticion.');
           }
-       }
-    );
+       });
   }
 }
