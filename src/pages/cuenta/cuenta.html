@@ -1,48 +1,15 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>
-      Cuenta
-    </ion-title>
-  </ion-navbar>
-</ion-header>
+<ion-menu [content]="content">
+   <ion-header>
+     <ion-toolbar>
+       <ion-title>Opciones</ion-title>
+     </ion-toolbar>
+   </ion-header>
+   <ion-content>
+     <ion-list>
+       <button ion-item (click)="moveTo(datosPage)">Datos personales</button>
+       <button ion-item >Curriculum</button>
+     </ion-list>
+   </ion-content>
+</ion-menu>
 
-<ion-content>
-  <ion-list>
-    <ion-list-header>Datos personales</ion-list-header>
-    <ion-item>
-      <ion-avatar item-left>
-        <img src="{{aux}}" />
-        <button item-right >Cambiar foto</button>
-      </ion-avatar>
-    </ion-item>
-    <ion-item>
-      <h3>Nombre: {{ user.name }}</h3> 
-    </ion-item>
-    <ion-item>
-      <h3>Apellidos: {{ user.surname }}</h3> 
-    </ion-item>
-    <ion-item>
-      <h3>Nick de usuario:  {{ user.username }} </h3> 
-    </ion-item>
-    <ion-item>
-      <h3>Email:</h3> <br/>
-      <ion-input type="text" value="{{user.email}}" ></ion-input>
-    </ion-item>
-    <ion-item>
-      <h3>Contraseña:</h3> <br/>
-    </ion-item>
-    <ion-item>
-      <ion-input type="text" placeholder="contraseña nueva" ></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-input type="text" placeholder="repita contraseña" ></ion-input>
-    </ion-item>
-    <ion-item>
-      <button>Cambiar contraseña</button>
-    </ion-item>
-    <ion-item>
-      <button (click)="logout()">Cerrar sesión</button>
-    </ion-item>
-    <button ion-button block >Guardar cambios</button>
-  </ion-list>
-</ion-content>
+<ion-nav [root]="datosPage" #content ></ion-nav>

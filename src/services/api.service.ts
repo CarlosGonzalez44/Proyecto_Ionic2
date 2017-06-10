@@ -1,6 +1,5 @@
-import { LoginPage } from './../pages/login/login';
 import { LoginService } from './login.service';
-import {AlertController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import * as io from 'socket.io-client';
@@ -41,6 +40,24 @@ export class ApiService {
     }
     emit(channel,parameters){
         this.socket.emit(channel,parameters)
+    }
+
+    sendPerfilChanges(pass1,pass2,email){
+      
+
+      var datos = {
+          "token" : this.logServ.getToken(),
+          "pass1" : pass1,
+          "pass2": pass2,
+          "email": email
+      }
+
+      let json = JSON.stringify(datos);
+      let params = "json="+json;
+
+      return this.http.post(this.url+"/changesperfilapp",params,{headers : this.headers}).map(
+        res => res.json()
+        );
     }
 
     /* Estas funciones fueron creadas para el chat con ajax, actualmente en desuso

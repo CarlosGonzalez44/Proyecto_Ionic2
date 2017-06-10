@@ -1,7 +1,6 @@
-import { LoginService } from './../../services/login.service';
-import { LoginPage } from './../login/login';
-import { Component } from '@angular/core';
-import { NavController, App } from 'ionic-angular';
+import { DatosPage } from './datos';
+import { Component, ViewChild  } from '@angular/core';
+import { NavController,MenuController } from 'ionic-angular';
 
 @Component({
   selector: 'page-cuenta',
@@ -9,18 +8,15 @@ import { NavController, App } from 'ionic-angular';
 })
 export class CuentaPage {
 
-  user;
-  aux = '../../assets/imagenes/1.jpg';
-  
-  constructor(public navCtrl: NavController, public app:App,public logS:LoginService) {
-     this.user = this.logS.getIdentity();
+  @ViewChild('content') menu : NavController
+  datosPage = DatosPage;
+
+  constructor(public navCtrl: NavController, public menuCtrl:MenuController) {
+
   }
 
-  logout(){
-      localStorage.setItem('identity',null);
-      localStorage.setItem('token',null);
-      
-      this.app.getRootNav().setRoot(LoginPage);
-
+  moveTo(page){
+      this.menu.setRoot(page);
+      this.menuCtrl.close();
   }
 }

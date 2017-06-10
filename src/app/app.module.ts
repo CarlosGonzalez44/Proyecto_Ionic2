@@ -1,3 +1,4 @@
+import { DatosPage } from './../pages/cuenta/datos';
 import { ApiService } from '../services/api.service';
 import { LoginService } from '../services/login.service';
 
@@ -25,7 +26,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   declarations: [
     MyApp,
     ChatsPage,
-    CuentaPage,
+    CuentaPage, DatosPage,
     HomePage,
     LoginPage,
     NoticiasPage,
@@ -43,7 +44,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   entryComponents: [
     MyApp,
     ChatsPage,
-    CuentaPage,
+    CuentaPage, DatosPage,
     HomePage,
     NoticiasPage,
     NoticiaPage,

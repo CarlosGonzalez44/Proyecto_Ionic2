@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle icon-only>
+       <ion-icon name='menu'></ion-icon>
+    </button>
+    <ion-title>
+      Datos personales
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>Perfil</ion-list-header>
+    <ion-item>
+      <ion-avatar item-left>
+        <img src="{{aux}}" />
+        <button item-right >Cambiar foto</button>
+      </ion-avatar>
+    </ion-item>
+    <ion-item>
+      <h3>Nombre: {{ user.name }}</h3> 
+    </ion-item>
+    <ion-item>
+      <h3>Apellidos: {{ user.surname }}</h3> 
+    </ion-item>
+    <ion-item>
+      <h3>Nick de usuario:  {{ user.username }} </h3> 
+    </ion-item>
+    <ion-item>
+      <h3>Email:</h3> <br/>
+      <ion-input type="text" [(ngModel)]="email" value="{{user.email}}" ></ion-input>
+    </ion-item>
+    <ion-item>
+      <h3>Cambiar contraseña:</h3> <br/>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" [(ngModel)]="passNew1" placeholder="contraseña nueva" ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" [(ngModel)]="passNew2" placeholder="repita contraseña" ></ion-input>
+    </ion-item>
+    <ion-item>
+      <button (click)="logout()">Cerrar sesión</button>
+    </ion-item>
+    <button ion-button block (click)="submitChanges()" >Guardar cambios</button>
+  </ion-list>
+</ion-content>
