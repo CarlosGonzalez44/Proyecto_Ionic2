@@ -1,9 +1,9 @@
 import { Sala } from './../models/sala';
 import { Noticia } from '../models/noticia';
 import { LoginService } from './login.service';
-import { AlertController, NavController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 import * as io from 'socket.io-client';
 import { Categoria } from "../models/categoria";
 import { Mensaje } from "../models/mensaje";
@@ -126,6 +126,7 @@ export class ApiService {
                     }
                     else{
                         console.log('no funciona, algo pasa con las peticiones al node')
+                        console.log('https://www.youtube.com/watch?v=oZ_PZrw2dX8')
                     } 
                 }
                 result = array;
@@ -136,7 +137,7 @@ export class ApiService {
       
     }
 
-    sendPerfilChanges(pass1,pass2,email){
+    sendPerfilChanges(pass1,pass2,email,callback){
       
 
       var datos = {
@@ -149,8 +150,14 @@ export class ApiService {
       let json = JSON.stringify(datos);
       let params = "json="+json;
 
-      return this.http.post(this.url+"/changesperfilapp",params,{headers : this.headers}).map(
-        res => res.json()
-        );
+      //return this.http.post(this.url+"/changesperfilapp",params,{headers : this.headers}).map(res => res.json());
+      this.http.post(this.url+"/changesperfilapp",params,{headers : this.headers}).map(res => res.json()).subscribe(
+          response => {
+              return callback(response);
+          },
+          error => {
+            return callback(error);
+          }
+        );;
     }
 }

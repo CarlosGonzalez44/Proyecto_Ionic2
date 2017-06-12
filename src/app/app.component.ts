@@ -9,8 +9,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { LoginService } from '../services/login.service';
 
 @Component({
-  templateUrl: 'app.html',
-  providers: [LoginService]
+  templateUrl: 'app.html'
 })
 export class MyApp {
   rootPage:any = LoginPage;
@@ -18,7 +17,7 @@ export class MyApp {
   public identity;
   public token;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private _loginService:LoginService) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private loginService:LoginService) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -31,10 +30,10 @@ export class MyApp {
   //la pagina de login como principal sino tabs
   ngOnInit(){
     //localStorage.clear();
-    this.identity = this._loginService.getIdentity();
-    this.token = this._loginService.getToken();
+    this.identity = this.loginService.getIdentity();
+    this.token = this.loginService.getToken();
 
-    if(this.identity){
+    if(this.identity && this.token){
         this.rootPage = TabsPage;
     }
 

@@ -1,4 +1,3 @@
-import { NoticiasPage } from './../noticias/noticias';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 

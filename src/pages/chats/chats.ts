@@ -25,23 +25,7 @@ export class ChatsPage {
      var S = this;
      this.api.setWebSocketConnection(this.logServ.getToken());
      this.api.emit('room',this.logServ.getToken());
-     /*this.api.getWebSocketConnection().on('room', (rooms) => {
 
-         if(typeof(rooms.BD) != "undefined"){
-            this.api.launchMessage("Error",rooms.BD);
-            this.api.closeWebsocketConnection();
-          }
-          else if(typeof(rooms.AUTH) != "undefined"){
-            this.api.launchMessage("Error",rooms.AUTH);
-            this.api.closeWebsocketConnection();
-            this.logServ.logout();
-            this.app.getRootNav().setRoot(LoginPage);
-          }
-          else{
-             this.rooms = rooms;
-          }  
-          
-      });*/
       this.api.onWebSocket('room',function(data){
          console.log(data);
          if(data == false)

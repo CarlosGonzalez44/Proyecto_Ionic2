@@ -18,49 +18,31 @@ export class LoginPage {
 
   login(formulario:NgForm)
   {
+    var S = this;
     var user = {
         "username": formulario.value.username,
         "password": formulario.value.password,
         "getHash":  "false"
     }
-    //mediante esta peticion obtendre el usuario en plano para almacenarlo en local
-    this.loginService.signup(user).subscribe(
-       response => {
-
-          if(response.length <= 1){
-              this.loginService.launchMessage('Error','Error en el servidor.');
-          }
-          else
-          {
-              if(!response.status){
-                  localStorage.setItem('identity', JSON.stringify(response));
-                  user.getHash = "true";
-
-                  // Ahora hacemos otra peticion para obtener el token del usuario y almacenarlo igualmente
-                  this.loginService.signup(user).subscribe(
-                      response => {
-
-                        if(response.length <= 0){
-                          this.loginService.launchMessage('Error','Error en el servidor.');
-                        }else{
-                          if(!response.status){
-                            localStorage.setItem('token', response);
-                            this.navCtrl.setRoot(TabsPage);
-                          }
-                        }
-                      },
-                      error => {
-                      if(error != null){
-                        this.loginService.launchMessage('Error','Error en la peticion.');
-                      }
-                    });
+    //obtenemos y almacenamos los datos del usuario en local
+    this.loginService.signup(user,false,function(data){
+       console.log(data);
+       console.log(S.loginService.getIdentity());
+      
+       if(data==true){
+          user.getHash = "true";
+          //obtenemos y almacenamos el token del usuario en local
+          S.loginService.signup(user,true,function(data){
+              console.log(data);
+              console.log(S.loginService.getToken());
+              if(data==true){
+                S.navCtrl.setRoot(TabsPage);
               }
-          }
-       },
-       error => {
-          if(error != null){
-            this.loginService.launchMessage('Error','Error en la peticion.');
-          }
-       });
+          });
+       }
+       else{
+           S.loginService.launchMessage("Error","Usuario o contraseña incorrectos.");
+       }
+    });
   }
 }

@@ -19,7 +19,6 @@ export class SalaChatPage {
   rutaFoto = '../../assets/imagenes/1.jpg';
   roomRecharge;
   newMessage;
-  users;
   constructor(public modalCtrl: ModalController,public navCtrl: NavController, public navParams: NavParams,
               private logServ:LoginService,private api:ApiService,private app:App) 
   {
@@ -83,8 +82,9 @@ export class SalaChatPage {
   sendMessage(){
 
     if(this.newMessage != ''){
-
-      var m = {"idUser":this.logServ.getIdentity().sub,
+      console.log(this.logServ.getIdentity())
+      console.log(this.room.id)
+      var m = {"idUser":this.logServ.getIdentity().id,
                "idRoom": this.room.id,
                "content":this.newMessage,
                "nameUser": this.logServ.getIdentity().name
@@ -97,9 +97,9 @@ export class SalaChatPage {
 
   mostrarParticipantes() {
 
-    
     let modal = this.modalCtrl.create(ParticipantesModal,{"room":this.room.id});
     modal.present();
+
   }
 
 }
@@ -146,7 +146,7 @@ export class ParticipantesModal {
 
   ionViewWillEnter(){
     var S = this;
-    this.api.setWebSocketConnection(this.logServ.getToken());  
+    //this.api.setWebSocketConnection(this.logServ.getToken());  
     this.api.emit('members',{"token":this.logServ.getToken(),"idRoom":this.idRoom});
 
     this.api.onWebSocket('members',function(data){
@@ -163,10 +163,11 @@ export class ParticipantesModal {
   }
 
   ionViewWillLeave(){
-     this.api.closeWebsocketConnection();
+     //this.api.closeWebsocketConnection();
   }
 
   dismiss() {
+    //this.api.closeWebsocketConnection();
     this.viewCtrl.dismiss();
   }
 }

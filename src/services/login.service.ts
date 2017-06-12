@@ -1,19 +1,19 @@
+import { Usuario } from '../models/usuario';
 import { AlertController} from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs/Observable'
 
 
 @Injectable()
 export class LoginService {
 
-    public url = "http://localhost/depinfo/web/app_dev.php";
-    public identity;
-	public token;
+    private url = "http://localhost/depinfo/web/app_dev.php";
+    private identity = new Usuario();
+	private token;
 
     constructor(private http: Http,private alertCtrl: AlertController){
-
+		
     }
 
 	launchMessage(title,message){
@@ -30,21 +30,55 @@ export class LoginService {
       localStorage.setItem('token',null);
 	}
 
-    signup(user_to_login){
+	signup(user_to_login,token,callback){
       let json = JSON.stringify(user_to_login);
       let params = "json="+json;
       let headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
+	  var result = false;
+      this.http.post(this.url+"/loginapp",params,{headers : headers}).map(res => res.json()).subscribe(
+		 response => {
 
-      return this.http.post(this.url+"/loginapp",params,{headers : headers}).map(
-        res => res.json()
-        );
+			if(response.length <= 1){
+				this.launchMessage('Error','Error en el servidor.');
+			}
+			else
+			{
+				if(!response.status){
+					if(token == true){
+						localStorage.setItem('token', response);
+						result = true;
+					}
+					else{
+						var u = new Usuario();
+						u.id = response.sub;
+						u.name = response.name;
+						u.surname = response.surname;
+						u.username = response.username;
+						u.email = response.email;
+						u.password = response.password;
+						u.information = response.information;
+						localStorage.setItem('identity', JSON.stringify(u));
+						result = true;
+					}
+				}
+			}
+			return callback(result);
+		},
+		error => {
+			if(error != null){
+				this.launchMessage('Error',error);
+			}
+		});	
     }
+
   	//mediante esta funcion transformamos de string a objecto la identidad del usuario
 	getIdentity(){
 		let identity = JSON.parse(localStorage.getItem('identity'));
 
-		if(identity != "undefined"){
+		if(identity != null){
+
 			this.identity = identity;
+
 		}else{
 			this.identity = null;
 		}
