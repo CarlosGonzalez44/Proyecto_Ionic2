@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {  NavController, NavParams } from 'ionic-angular';
+import { Noticia } from "../../models/noticia";
 
 
 @Component({
@@ -8,7 +9,7 @@ import {  NavController, NavParams } from 'ionic-angular';
 })
 export class NoticiaPage {
 
-  noticia:object;
+  noticia:Noticia;
   aux = '../../assets/imagenes/1.jpg';
   
   constructor(public navCtrl: NavController, public navParams: NavParams) {

@@ -1,8 +1,11 @@
+import { Usuario } from '../../models/usuario';
+import { Mensaje } from '../../models/mensaje';
 import { ApiService } from './../../services/api.service';
 import { LoginService } from './../../services/login.service';
 import { LoginPage } from './../login/login';
 import { Component } from '@angular/core';
 import { ModalController, Platform, NavController, NavParams, ViewController, App } from 'ionic-angular';
+import { Sala } from "../../models/Sala";
 
 @Component({
   selector: 'page-sala-chat',
@@ -11,8 +14,8 @@ import { ModalController, Platform, NavController, NavParams, ViewController, Ap
 
 export class SalaChatPage {
 
-  socket:any
-  room;messages;
+  room:Sala;
+  messages:Array<Mensaje>;
   rutaFoto = '../../assets/imagenes/1.jpg';
   roomRecharge;
   newMessage;
@@ -27,9 +30,9 @@ export class SalaChatPage {
 
 
   ionViewWillEnter(){
-      
+      var S = this;
       this.api.setWebSocketConnection(this.logServ.getToken());
-
+      this.api.emit('room',this.logServ.getToken());
       if(localStorage.getItem('allMessages'+this.room.id)==null)
       {
           this.messages=[];
@@ -41,46 +44,35 @@ export class SalaChatPage {
         this.api.emit('getMessages',{"token":this.logServ.getToken(),"idRoom":this.room.id,"lastMessage":this.messages[this.messages.length-1].id});
       }
 
-      this.api.getWebSocketConnection().on('getMessages', (msgs) => {
-
-          if(typeof(msgs.BD) != "undefined"){
-            this.api.launchMessage("Error",msgs.BD);
-            this.api.closeWebsocketConnection();
-          }
-          else if(typeof(msgs.AUTH) != "undefined"){
-            this.api.launchMessage("Error",msgs.AUTH);
-            this.api.closeWebsocketConnection();
-            this.logServ.logout();
-            this.app.getRootNav().setRoot(LoginPage);
-          }
-          else{
-              if(msgs.length >= 1)
-              {
-                 for(var i=0;i<msgs.length;i++){
-                   this.messages.push(msgs[i]);
-                   
-                 }
-                 localStorage.setItem('allMessages'+this.room.id,JSON.stringify(this.messages));
-              }
-          }  
+      this.api.onWebSocket('getMessages',function(data){
+         console.log(data);
+         if(data == false)
+         {
+            S.app.getRootNav().setRoot(LoginPage);
+         }
+         else
+         {
+           if(data.length >= 1){
+               for(var i=0;i<data.length;i++)
+               {
+                   S.messages.push(data[i]);
+               }
+               localStorage.setItem('allMessages'+S.room.id,JSON.stringify(S.messages));
+           }
+         }
       });
 
-      this.api.getWebSocketConnection().on('message', (msg) => {
-          console.log("al menos llego")
-          if(typeof(msg.BD) != "undefined"){
-            this.api.launchMessage("Error",msg.BD);
-            this.api.closeWebsocketConnection();
-          }
-          else if(typeof(msg.AUTH) != "undefined"){
-            this.api.launchMessage("Error",msg.AUTH);
-            this.api.closeWebsocketConnection();
-            this.logServ.logout();
-            this.app.getRootNav().setRoot(LoginPage);
-          }
-          else{
-            
-            this.messages.push(msg[0]);
-          }  
+       this.api.onWebSocket('message',function(data){
+         console.log(data);
+         if(data == false)
+         {
+            S.app.getRootNav().setRoot(LoginPage);
+         }
+         else
+         {
+            S.messages.push(data[0]);
+            localStorage.setItem('allMessages'+S.room.id,JSON.stringify(S.messages));
+         }
       });
 
   }
@@ -142,7 +134,7 @@ export class SalaChatPage {
 `
 })
 export class ParticipantesModal {
-  participantes;
+  participantes:Array<Usuario>;
   idRoom;
   rutaFoto = '../../assets/imagenes/1.jpg';
   constructor(public platform: Platform,public params: NavParams,public viewCtrl: ViewController, public api:ApiService,
@@ -153,25 +145,21 @@ export class ParticipantesModal {
   }
 
   ionViewWillEnter(){
+    var S = this;
     this.api.setWebSocketConnection(this.logServ.getToken());  
     this.api.emit('members',{"token":this.logServ.getToken(),"idRoom":this.idRoom});
-    this.api.getWebSocketConnection().on('members', (data) => {
 
-        if(typeof(data.BD) != "undefined")
-        {
-            this.api.launchMessage("Error",data.BD);
-            this.api.closeWebsocketConnection();
-        }
-        else if(typeof(data.AUTH) != "undefined"){
-            this.api.launchMessage("Error",data.AUTH);
-            this.api.closeWebsocketConnection();
-            this.logServ.logout();
-            this.app.getRootNav().setRoot(LoginPage);
-        }
-        else{
-            this.participantes = data;
-        }
-    });
+    this.api.onWebSocket('members',function(data){
+         console.log(data);
+         if(data == false)
+         {
+            S.app.getRootNav().setRoot(LoginPage);
+         }
+         else
+         {
+            S.participantes = data;
+         }
+     });
   }
 
   ionViewWillLeave(){

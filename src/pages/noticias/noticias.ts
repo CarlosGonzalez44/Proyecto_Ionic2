@@ -1,9 +1,11 @@
+import { Noticia } from './../../models/noticia';
 import { ApiService } from './../../services/api.service';
 import { LoginPage } from './../login/login';
 import { LoginService } from './../../services/login.service';
 import { NoticiaPage } from './../noticia/noticia';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, App } from 'ionic-angular';
+import { Categoria } from "../../models/categoria";
 
 
 @Component({
@@ -11,120 +13,66 @@ import { NavController, NavParams } from 'ionic-angular';
   templateUrl: 'noticias.html'
 })
 export class NoticiasPage {
-    
+  
   noticiaPage = NoticiaPage;
   aux = '../../assets/imagenes/1.jpg';
-  cat;
-  noticias;
-  categorias;
+  cat:Categoria;
+  noticias:Array<Noticia>;
+  categorias:Array<Categoria>;
 
-  constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService) {
+  constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService,private app:App) {
      //this.noticias = JSON.parse(localStorage.getItem('noticias'));
+
   }
 
   ngOnInit(){
-
-      if(this.logServ.validateUser())
-      {
-         this.api.getNewsAndCategorys().subscribe(
-            
-                response => {
-                    if(response.json().status)
-                    {
-                        this.api.launchMessage(response.json().status,response.json().data);
-                        this.navCtrl.setRoot(LoginPage);
-                    }
-                    else
-                    {
-                        this.noticias = response.json()[0];
-                        this.categorias = response.json()[1];
-                    }
-                },
-                error => {
-                    this.api.launchMessage('500',error);
-                }
-          );
-      }
-      else
-      {
-          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
-          this.navCtrl.setRoot(LoginPage); 
-      }
-      
+    var S = this;
+    //-1 seria el id de la categoria seleccionada, en este caso queremos todas las noticias sin filtrar por lo que ponemos -1
+    this.api.getNewsAndCategorys(-1,function(result){
+        console.log(result);
+        //si retorna false significa que el servidor no ha dado por bueno el token
+        if(result==false){
+            this.app.getRootNav().setRoot(LoginPage);
+        }
+        else{
+            S.noticias = result[0];
+            S.categorias = result[1];
+        }
+    }); 
   }
 
   filtroNoticias(){
 
-      if(this.logServ.validateUser())
-      {
-          this.api.getNewsAndCategorys().subscribe(
-             response => 
-                    { 
-                        if(response.json().status)
-                        {
-                            this.api.launchMessage(response.json().status,response.json().data);
-                            this.navCtrl.setRoot(LoginPage);
-                        }
-                        else
-                        {
-                            this.noticias=[];
-                            if(this.cat != -1)
-                            {
-                                for(let n of response.json()[0])
-                                {
-                                    if(n.category.id == this.cat){
-                                        this.noticias.push(n);
-                                    }
-                                }
-                            }
-                            else{
-                                this.noticias = response.json()[0];
-                            }
-                            this.categorias = response.json()[1];
-                        }
-                    },
-             error => {
-                 this.api.launchMessage('500',error);
-             }
-          );
-      }
-      else
-      {
-          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
-          this.navCtrl.setRoot(LoginPage);
-      }
+    var S = this;
+    //seria el id de la categoria seleccionada
+    this.api.getNewsAndCategorys(this.cat,function(result){
+        console.log(result);
+        //si retorna false significa que el servidor no ha dado por bueno el token
+        if(result==false){
+            this.app.getRootNav().setRoot(LoginPage);
+        }
+        else{
+            S.noticias = result[0];
+            S.categorias = result[1];
+        }
+    });
   }
 
   doRefresh(refresher){
 
-      if(this.logServ.validateUser())
-      {
-          this.api.getNewsAndCategorys().subscribe(
-             response => 
-             { 
-                   if(response.json().status)
-                   {
-                       this.api.launchMessage(response.json().status,response.json().data);
-                       this.navCtrl.setRoot(LoginPage);
-                   }
-                   else
-                   {
-                       this.noticias = response.json()[0];
-                       this.categorias = response.json()[1];
-                   }
-                   refresher.complete();
-             },
-             error => {
-                 this.api.launchMessage('500',error);
-                 refresher.complete();
-             }
-          );
-      }
-      else
-      {
-          this.api.launchMessage('Error de autenticación','Debes estar logeado para acceder a esta página.');
-          this.navCtrl.setRoot(LoginPage);
-          refresher.complete();
-      }
+    var S = this;
+    //-1 seria el id de la categoria seleccionada, en este caso queremos todas las noticias sin filtrar por lo que ponemos -1
+    this.api.getNewsAndCategorys(-1,function(result){
+        console.log(result);
+        //si retorna false significa que el servidor no ha dado por bueno el token
+        if(result==false){
+            this.app.getRootNav().setRoot(LoginPage);
+        }
+        else{
+            S.noticias = result[0];
+            S.categorias = result[1];
+        }
+        refresher.complete();
+    });
   }
 }

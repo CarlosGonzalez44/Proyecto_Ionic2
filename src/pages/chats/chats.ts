@@ -4,6 +4,7 @@ import { ApiService } from './../../services/api.service';
 import { Component } from '@angular/core';
 import { SalaChatPage } from '../sala-chat/sala-chat';
 import { NavController, NavParams, App } from 'ionic-angular';
+import { Sala } from "../../models/Sala";
 
 @Component({
   selector: 'page-chats',
@@ -13,7 +14,7 @@ export class ChatsPage {
 
   salaPage = SalaChatPage;
   aux = '../../assets/imagenes/1.jpg';
-  rooms;
+  rooms:Array<Sala>;
 
   constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService,private app:App) {
         
@@ -21,10 +22,10 @@ export class ChatsPage {
   }
   
   ionViewWillEnter(){
-
+     var S = this;
      this.api.setWebSocketConnection(this.logServ.getToken());
      this.api.emit('room',this.logServ.getToken());
-     this.api.getWebSocketConnection().on('room', (rooms) => {
+     /*this.api.getWebSocketConnection().on('room', (rooms) => {
 
          if(typeof(rooms.BD) != "undefined"){
             this.api.launchMessage("Error",rooms.BD);
@@ -40,7 +41,20 @@ export class ChatsPage {
              this.rooms = rooms;
           }  
           
+      });*/
+      this.api.onWebSocket('room',function(data){
+         console.log(data);
+         if(data == false)
+         {
+            S.app.getRootNav().setRoot(LoginPage);
+         }
+         else
+         {
+            S.rooms = data;
+         }
       });
+      
+      
   }
   ionViewWillLeave(){
     
