@@ -40,7 +40,9 @@ export class SalaChatPage {
       else{
         
         this.messages = JSON.parse(localStorage.getItem('allMessages'+this.room.id));
-        this.api.emit('getMessages',{"token":this.logServ.getToken(),"idRoom":this.room.id,"lastMessage":this.messages[this.messages.length-1].id});
+        this.api.emit('getMessages',{"token":this.logServ.getToken(),
+                                     "idRoom":this.room.id,
+                                     "lastMessage":this.messages[this.messages.length-1].id});
       }
 
       this.api.onWebSocket('getMessages',function(data){
@@ -125,7 +127,9 @@ export class SalaChatPage {
   <ion-list>
       <ion-item *ngFor="let p of participantes">
         <ion-avatar item-left>
-          <img src="{{rutaFoto}}"/>
+          <img *ngIf="p.id==1" src="../../assets/imagenes/1p.png" />
+          <img *ngIf="p.id%2 == 0 && p.id!=1 " src="../../assets/imagenes/2p.jpg" />
+          <img *ngIf="p.id%2 != 0 && p.id!=1 " src="../../assets/imagenes/3p.png" />
         </ion-avatar>
         <h2>{{p.name}}</h2>
       </ion-item>

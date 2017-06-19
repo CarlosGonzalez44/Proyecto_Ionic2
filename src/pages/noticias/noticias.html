@@ -25,11 +25,15 @@
                      *ngFor="let noticia of noticias">
 
       <ion-thumbnail item-left>
-        <img src="{{aux}}" />
+        <img *ngIf="noticia.id == 1" src="../../assets/imagenes/1.jpg" />
+        <img *ngIf="noticia.id == 2" src="../../assets/imagenes/2.jpg" />
+        <img *ngIf="noticia.id == 3" src="../../assets/imagenes/3.jpg" />
+        <img *ngIf="noticia.id == 4" src="../../assets/imagenes/4.jpg" />
+        <!-- <img  src="{{aux}}" /> -->
       </ion-thumbnail>
       <h2>{{ noticia.name }}</h2>
-      <p>Autor: {{ noticia.user }}</p>
-      <p>Fecha: {{ noticia.date }}</p>
+      <p>Autor: {{ noticia.author }}</p>
+      <p>Fecha: {{ noticia.date | date:'dd-MM-yy'}}</p>
     </button>
   </ion-list>
 </ion-content>

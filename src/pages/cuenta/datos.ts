@@ -17,6 +17,7 @@ export class DatosPage {
   
   constructor(public navCtrl: NavController, public app:App,private logS:LoginService, private api:ApiService) {
      this.user = this.logS.getIdentity();
+     this.email = this.user.email;
   }
 
   logout(){
@@ -36,7 +37,7 @@ export class DatosPage {
      {
             if(this.passNew1.localeCompare(this.passNew2)!=0){
               
-              this.api.launchMessage("Error","Ambas contraseñas deben coincidir.")
+              this.api.launchMessage("Error","Ambas contraseñas deben coincidir.");
             }
             else{
                flag = true;
@@ -46,8 +47,12 @@ export class DatosPage {
          flag = true;
      }
      if(flag == true){
+       var S = this;
         this.api.sendPerfilChanges(this.passNew1,this.passNew2,this.email,function(data){
            console.log(data);
+           S.api.launchMessage("Exito","Cambios realizados correctamente.");
+           S.passNew1= "";S.passNew2= "";
+
         });
      }
      

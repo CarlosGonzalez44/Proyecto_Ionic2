@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class LoginService {
 
-    private url = "http://localhost/depinfo/web/app_dev.php";
+    private url = "http://192.168.19.173/depinfo/web/app_dev.php";
     private identity = new Usuario();
 	private token;
 
@@ -29,7 +29,7 @@ export class LoginService {
 	  localStorage.setItem('identity',null);
       localStorage.setItem('token',null);
 	}
-
+	//la variable token nos indica si queremos obtener los datos del usuario o su token
 	signup(user_to_login,token,callback){
       let json = JSON.stringify(user_to_login);
       let params = "json="+json;

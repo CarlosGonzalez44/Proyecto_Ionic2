@@ -12,7 +12,7 @@ import { Usuario } from "../models/usuario";
 @Injectable()
 export class ApiService {
 
-    private url = "http://localhost/depinfo/web/app_dev.php";
+    private url = "http://192.168.19.173/depinfo/web/app_dev.php";
 	private headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
     private socket:any;
 
@@ -102,7 +102,7 @@ export class ApiService {
             result = false;
           }
           else{
-              console.log(data);
+
               var array=[];
               if(data.length >=1 )
               {
@@ -114,7 +114,7 @@ export class ApiService {
                     }
                     else if(channel.localeCompare('getMessages')==0 || channel.localeCompare('message')==0)
                     {
-                        array.push(new Mensaje(data[i].id,data[i].author,data[i].content,data[i].date));
+                        array.push(new Mensaje(data[i].id,data[i].author,data[i].user_id,data[i].content,data[i].date));
                     }
                     else if(channel.localeCompare('members')==0){
                         var u = new Usuario();
@@ -133,13 +133,11 @@ export class ApiService {
               }
           }  
           return callback(result)
-      });
-      
+      });  
     }
 
     sendPerfilChanges(pass1,pass2,email,callback){
       
-
       var datos = {
           "token" : this.logServ.getToken(),
           "pass1" : pass1,

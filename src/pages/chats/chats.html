@@ -14,7 +14,9 @@
                      [navParams]=r
                      *ngFor="let r of rooms">
       <ion-avatar item-left>
-        <img src="{{aux}}" />
+        <img *ngIf="r.id%2 == 0 " src="../../assets/imagenes/1m.jpeg" />
+        <img *ngIf="r.id%2 != 0 " src="../../assets/imagenes/2m.jpg" />
+        <!-- <img src="{{aux}}" /> -->
       </ion-avatar>
       <h2>{{ r.title }}</h2>
       <p>Creador: {{ r.author }}</p>

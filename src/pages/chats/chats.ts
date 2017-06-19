@@ -17,7 +17,7 @@ export class ChatsPage {
   rooms:Array<Sala>;
 
   constructor(public navCtrl: NavController,public navParams: NavParams,private logServ:LoginService, private api:ApiService,private app:App) {
-        
+
 
   }
   
