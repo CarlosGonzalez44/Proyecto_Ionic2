@@ -12,7 +12,8 @@ import { Usuario } from "../models/usuario";
 @Injectable()
 export class ApiService {
 
-    private url = "http://192.168.19.173/depinfo/web/app_dev.php";
+    //private url = "http://192.168.19.173/depinfo/web/app_dev.php";
+    private url = "http://192.168.19.173/app_dev.php";
 	private headers = new Headers({'Content-Type':'application/x-www-form-urlencoded'});
     private socket:any;
 
@@ -75,7 +76,8 @@ export class ApiService {
 	}
 
     setWebSocketConnection(token){
-        this.socket = io('http://localhost:3000',{query: "token="+token});
+        //this.socket = io('http://localhost:3000',{query: "token="+token});
+        this.socket = io('http://192.168.19.173:3000',{query: "token="+token});
     }
     getWebSocketConnection(){
         return this.socket;

@@ -8,7 +8,8 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class LoginService {
 
-    private url = "http://192.168.19.173/depinfo/web/app_dev.php";
+	private url = "http://192.168.19.173/app_dev.php";
+    //private url = "http://192.168.19.173/depinfo/web/app_dev.php";
     private identity = new Usuario();
 	private token;
 
